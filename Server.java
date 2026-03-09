@@ -4,6 +4,8 @@ import com.sun.net.httpserver.HttpExchange;
 import java.net.InetSocketAddress;
 import java.io.IOException;
 import com.sun.net.httpserver.Headers;
+import java.util.Scanner;
+import java.io.InputStream;
 
 class Server {
     public static void main(String[] args) throws IOException {
@@ -57,6 +59,25 @@ class Server {
                 exchange.sendResponseHeaders(200, response.length());
                 exchange.getResponseBody().write(response.getBytes());
                 exchange.getResponseBody().close();
+            }
+        });
+        server.createContext("/echo",new HttpHandler(){
+            @Override
+            public void handle(HttpExchange exchange)throws IOException {
+                String method =exchange.getRequestMethod();
+                if(!method.equals("POST")){
+                    String response="Method not allowed";
+                    exchange.sendResponseHeaders(405,response.length());
+                    exchange.getResponseBody().write(response.getBytes());
+                    exchange.getResponseBody().close();
+                    return;
+                }
+                InputStream is= exchange.getRequestBody();    
+                Scanner scanner = new Scanner(is).useDelimiter("\\A");
+                String response = scanner.hasNext() ? scanner.next() : "";
+                 exchange.sendResponseHeaders(200,response.length());
+                    exchange.getResponseBody().write(response.getBytes());
+                    exchange.getResponseBody().close();
             }
         });
         server.start();
