@@ -1,36 +1,174 @@
-# Java Backend Journey
+ # Minimal Java HTTP Backend Server (No Frameworks)
 
-This repository marks the start of my backend learning journey.
+A lightweight HTTP backend server built **from scratch in Java** using the built-in `com.sun.net.httpserver` package.
+The goal of this project is to understand how backend servers work internally **without using frameworks like Spring Boot**.
 
-I began by building a basic HTTP server in Java (no frameworks) to understand how ports, HTTP requests, responses, and handlers actually work.
+---
 
-I’ll be updating this repository consistently as I learn and improve step by step.
+## Overview
 
-Focus: fundamentals first, frameworks later.
+This project demonstrates how to:
 
-## Day 2 – Understanding Routing & Request Inspection
+* Create a custom HTTP server
+* Map routes manually using `createContext`
+* Handle requests with `HttpHandler`
+* Inspect request details using `HttpExchange`
+* Return JSON responses
+* Validate HTTP methods
+* Read request body data from POST requests
 
-Today I focused on understanding how backend routing and request handling actually work in Java.
+It serves as a **foundation for understanding backend systems and HTTP request handling**.
 
-What I built:
-- Added a second endpoint (`/info`) using `createContext`
-- Understood that each context maps a URL path to a handler
-- Learned how a backend inspects client requests using `HttpExchange`
+---
 
-Key concepts I learned:
-- Difference between defining an endpoint and handling a request
-- How to read request data:
-  - HTTP method
-  - Request path
-  - Request headers
-- How request and response share the same `HttpExchange`
-- Correct HTTP lifecycle:
-  read request → build response → send headers → write body → close
+## Endpoints
 
-Challenges:
-- Java syntax (imports, string concatenation, collections)
-- Iterating over headers using `keySet()` and for-each loops
+| Endpoint  | Method | Description                                    |
+| --------- | ------ | ---------------------------------------------- |
+| `/`       | GET    | Basic welcome endpoint                         |
+| `/info`   | GET    | Displays request method, path, and headers     |
+| `/json`   | GET    | Returns a JSON response                        |
+| `/health` | GET    | Health-check endpoint to confirm server status |
+| `/echo`   | POST   | Reads request body and returns it              |
 
-Outcome:
-- Built a request inspector endpoint that displays real client request details
-- Gained clarity on backend fundamentals beyond frameworks
+---
+
+## Example Requests
+
+### GET `/json`
+
+Response:
+
+```json
+{
+  "message": "Hello from Java Backend"
+}
+```
+
+---
+
+### GET `/health`
+
+Response:
+
+```json
+{
+  "status": "running"
+}
+```
+
+---
+
+### POST `/echo`
+
+Request:
+
+```
+POST /echo
+Body: hello backend
+```
+
+Response:
+
+```
+hello backend
+```
+
+---
+
+## How It Works
+
+The server follows the HTTP lifecycle:
+
+```
+Client Request
+      ↓
+HttpServer
+      ↓
+Route Mapping (createContext)
+      ↓
+HttpHandler
+      ↓
+Response Sent Back
+```
+
+Core Java classes used:
+
+* `HttpServer`
+* `HttpHandler`
+* `HttpExchange`
+* `Headers`
+* `InputStream`
+
+---
+
+## Running the Project
+
+### Compile
+
+```
+javac Server.java
+```
+
+### Run
+
+```
+java Server
+```
+
+The server will start on:
+
+```
+http://localhost:8080
+```
+
+---
+
+## Testing Endpoints
+
+Open in browser:
+
+```
+http://localhost:8080/
+http://localhost:8080/json
+http://localhost:8080/info
+http://localhost:8080/health
+```
+
+Test the POST endpoint using curl:
+
+```
+curl -X POST http://localhost:8080/echo -d "hello backend"
+```
+
+Expected response:
+
+```
+hello backend
+```
+
+---
+
+## Key Concepts Learned
+
+* HTTP request / response lifecycle
+* Backend routing
+* Handling request headers
+* JSON API responses
+* HTTP method validation
+* Reading request body streams
+* Building backend services without frameworks
+
+---
+
+## Tech Stack
+
+* **Java**
+* Built-in `HttpServer`
+* No external frameworks
+
+---
+
+## Author
+
+Built as part of my journey learning backend development by implementing core HTTP concepts directly in Java.
