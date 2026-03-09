@@ -48,6 +48,17 @@ class Server {
 
             }
         });
+
+        server.createContext("/health", new HttpHandler() {
+            @Override
+            public void handle(HttpExchange exchange) throws IOException {
+                String response = "{\"status\":\"Running\"}";
+                exchange.getResponseHeaders().set("Content-Type", "application/json");
+                exchange.sendResponseHeaders(200, response.length());
+                exchange.getResponseBody().write(response.getBytes());
+                exchange.getResponseBody().close();
+            }
+        });
         server.start();
     }
 }
